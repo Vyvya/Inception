@@ -1,11 +1,16 @@
-FROM debian
+FROM debian:bullseye
 
-RUN apt-get update && apt-get install
+RUN apt update && apt upgrade -y
+RUN apt-get install mariadb-server -y
 
-COPY . .
+COPY conf/50-server.cnf	/etc/mysql/mariadb.conf.d/50-server.cnf
 
-RUN --mount=type=ssh ....
-RUN --network=host
+RUN service mysql start && \
+    mysql -e "CREATE DATABASE IF NOT EXISTS ${SQL_DATABASE};" && \
+    mysql -e "CREATE USER IF NOT EXISTS '${SQL_USER}'@'%' IDENTIFIED BY '${SQL_PASSWORD}';" && \
+    mysql -e "GRANT ALL PRIVILEGES ON ${SQL_DATABASE}.* TO '${SQL_USER}'@'%';" && \
+    mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${SQL_ROOT_PASSWORD}';" && \
+    mysql -e "FLUSH PRIVILEGES;" && \
+    service mysql stop
 
-EXPOSE 80
-CMD
+ENTRYPOINT ["mysqld_safe"]

@@ -20,8 +20,10 @@ version: '3.9'
 services:
   
   wordpress:
-    image: wordpress:latest
-    container_name: wordpress-app
+    #image: wordpress:latest
+    #container_name: wordpress-app
+    build:
+      context: ./requirements/wordpress
     restart: always
     expose:
       - "8080:8000"
@@ -30,24 +32,28 @@ services:
       #- ./config/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
       - wordpress_data:/var/www/html
       - ./wordpress:/var/www/html
+    env_file:
+      - .env
 
-    environment:
-      WORDPRESS_DP_HOST: mariadb
-      WORDPRESS_DB_NAME: "${DB_NAME}"
-      WORDPRESS_DB_USER1: "${MYSQL_USER1}"
-      WORDPRESS_DB_PASSWORD1: "${MYSQL_PASSWORD1}"
-      WORDPRESS_DB_USER2: "${MYSQL_USER2}"
-      WORDPRESS_DB_PASSWORD2: "${MYSQL_PASSWORD2}"
+    #environment:
+      #WORDPRESS_DP_HOST: mariadb
+      #WORDPRESS_DB_NAME: "${DB_NAME}"
+      #WORDPRESS_DB_USER1: "${MYSQL_USER1}"
+      #WORDPRESS_DB_PASSWORD1: "${MYSQL_PASSWORD1}"
+      #WORDPRESS_DB_USER2: "${MYSQL_USER2}"
+      #WORDPRESS_DB_PASSWORD2: "${MYSQL_PASSWORD2}"
       #VIRTUAL_HOST: example.commandLETSENCRYPT_HOST: example.com
     depends_on:
-      - mariadb
+      - mysql
     links:
-      - db  
+      - mysql  
 
   ngnix:
-    container_name: nginx
+    #container_name: nginx
     #we pull the Nginx proxy Docker image
-    image: nginx:latest
+    #image: nginx:latest
+    build:
+      context: ./requirements/nginx
     restart: always
     #build: .
     #expose ports 80 and 443 to the host container which will be used to connect to the outer world
@@ -56,35 +62,41 @@ services:
       - 443:443
     volumes:
       - ./nginx/conf:/etc/nginx/conf.d
-      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /wordpress_data/html:/var/www/html
       #created volumes for the Nginx HTML page
       - ./nginx/html:/usr/share/nginx/html
       #directory where all the SSL certificates will be stored
       - ./nginx/certs:/etc/nginx/certs
       #directory for Virtual hosts which is what we used above to add additional nginx configuration
-      - ./nginx/vhost:/etc/nginx/vhost.d
-    logging:
-      option:
+      #- ./nginx/vhost:/etc/nginx/vhost.d
+    links:
+      - wordpress
+    env_file:
+      - .env 
+    #logging:
+      #option:
        #we have configured the file upload size for the WordPress and phpMyAdmin sites
-        max-size: "10m"
-        max-file: "3"
+        #max-size: "10m"
+       #max-file: "3"
 
    # depends_on:
     #  - mariadb
 
   mariadb:
-    container_name: mariadb
-    image:
+    #container_name: mariadb
+    #image:
+    build:
+      context: ./requirements/mariadb
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_DATABASE: wordpress_db
-      MYSQL_USER1: veta
-      MYSQL_PASSWORD1: 2345
-      MYSQL_USER2: guest
-      MYSQL_PASSWORD2: 3456
+    #environment:
+      #MYSQL_ROOT_PASSWORD: 1234
+      #MYSQL_DATABASE: wordpress_db
+      #MYSQL_USER1: veta
+      #MYSQL_PASSWORD1: 2345
+      #MYSQL_USER2: guest
+      #MYSQL_PASSWORD2: 3456
     volumes:
-      - mariadb:/var/lib/mariadb
+      - db_data:/var/lib/mysql
 
     
 
