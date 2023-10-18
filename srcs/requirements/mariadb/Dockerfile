@@ -1,16 +1,21 @@
 FROM debian:bullseye
 
 RUN apt update && apt upgrade -y
-RUN apt-get install mariadb-server -y
+RUN apt-get install -y mariadb-server
 
-COPY conf/50-server.cnf	/etc/mysql/mariadb.conf.d/50-server.cnf
+COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+COPY tools/create_database.sh .
 
-RUN service mysql start && \
-    mysql -e "CREATE DATABASE IF NOT EXISTS ${SQL_DATABASE};" && \
-    mysql -e "CREATE USER IF NOT EXISTS '${SQL_USER}'@'%' IDENTIFIED BY '${SQL_PASSWORD}';" && \
-    mysql -e "GRANT ALL PRIVILEGES ON ${SQL_DATABASE}.* TO '${SQL_USER}'@'%';" && \
-    mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${SQL_ROOT_PASSWORD}';" && \
-    mysql -e "FLUSH PRIVILEGES;" && \
-    service mysql stop
+# Set environment variables
+ENV MYSQL_ROOT_PASSWORD=1234
+ENV MYSQL_DATABASE=db
+ENV MYSQL_USER=vg
+ENV MYSQL_PASSWORD=vg
 
-ENTRYPOINT ["mysqld_safe"]
+# Make your script executable
+RUN chmod +x create_database.sh
+
+# Set the entrypoint to the MariaDB entrypoint script
+#ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["tail", "-f"]
+# CMD ["mysqld"]
