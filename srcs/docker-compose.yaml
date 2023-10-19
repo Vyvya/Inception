@@ -88,13 +88,8 @@ services:
     build:
       context: ./requirements/mariadb
     restart: always
-    #environment:
-      #MYSQL_ROOT_PASSWORD: 1234
-      #MYSQL_DATABASE: wordpress_db
-      #MYSQL_USER1: veta
-      #MYSQL_PASSWORD1: 2345
-      #MYSQL_USER2: guest
-      #MYSQL_PASSWORD2: 3456
+    env_file:
+      - .env
     volumes:
       - db_data:/var/lib/mysql
 
