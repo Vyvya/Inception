@@ -1,19 +1,37 @@
 FROM debian:bullseye
 
-RUN apt update && apt upgrade -y
+# Install required packages
+RUN apt update && apt upgrade -y \
+	&& apt-get -y install wget php7.3 php-fpm php-mysql mariadb-client
 
-#installer WordPress avec son lien de téléchargement
-RUN apt-get -y install wget
+# Download and extract WordPress
+RUN wget https://wordpress.org/latest.tar.gz -P /var/www \
+    && cd /var/www && tar -xzf latest.tar.gz && rm latest.tar.gz
 
-RUN apt-get install -y php7.3\
-						php-fpm\
-						php-mysql\
-						mariadb-client
+RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+RUN chmod +x wp-cli.phar
+RUN mv wp-cli.phar /usr/local/bin/wp
+#RUN cp conf/wp-config.php /var/www/html/wp-config.php
 
-RUN wget https://wordpress.org/latest.tar.gz -P /var/www
+# Create the directory if it doesn't exist
+RUN mkdir -p /etc/php/7.3/fpm
 
-#go into /var/www untar and delete .tar
-RUN cd /var/www && tar -xzf wordpress-6.0-fr_FR.tar.gz && rm wordpress-6.0-fr_FR.tar.gz
+RUN echo "clear_env = no" >> /etc/php/7.3/fpm/php.ini
+#RUN sed -i 's|listen = /run/php/php7.3-fpm.sock|listen = wordpress:9000|' /etc/php/7.3/fpm/pool.d/www.conf
 
-#give rights to root
+# Give ownership to the web server user (www-data)
 RUN		chown -R root:root /var/www/wordpress
+
+# Create the necessary directory structure for PHP configuration
+RUN mkdir -p /etc/php/7.3/fpm
+
+# Copy your custom PHP configuration file (if needed)
+#COPY conf/php.ini /etc/php/7.3/fpm/php.ini
+
+# Set the working directory
+WORKDIR /var/www/html
+
+# Define the entry point and command
+#ENTRYPOINT ["auto_config.sh"]
+#CMD ["php-fpm"]
+CMD ["tail", "-f"]

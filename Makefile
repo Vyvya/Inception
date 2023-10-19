@@ -11,4 +11,7 @@ down:
 build:
 	docker-compose up -d --build
 
+# clean: down
+# 	@rm -rf mysql/* wordpress/*
+
 .PHONY: up down build	

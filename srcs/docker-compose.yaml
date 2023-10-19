@@ -34,24 +34,19 @@ services:
       - ./wordpress:/var/www/html
     env_file:
       - .env
-
-    #environment:
-      #WORDPRESS_DP_HOST: mariadb
-      #WORDPRESS_DB_NAME: "${DB_NAME}"
-      #WORDPRESS_DB_USER1: "${MYSQL_USER1}"
-      #WORDPRESS_DB_PASSWORD1: "${MYSQL_PASSWORD1}"
-      #WORDPRESS_DB_USER2: "${MYSQL_USER2}"
-      #WORDPRESS_DB_PASSWORD2: "${MYSQL_PASSWORD2}"
-      #VIRTUAL_HOST: example.commandLETSENCRYPT_HOST: example.com
+    networks:
+      - my-wordpress-network
+    environment:
+      WORDPRESS_DP_HOST: mariadb
+      WORDPRESS_DB_NAME: "${MYSQL_DATABASE}"
+      WORDPRESS_DB_USER: "${MYSQL_USER}"
+      WORDPRESS_DB_PASSWORD: "${MYSQL_PASSWORD}"
     depends_on:
       - mysql
     links:
       - mysql  
 
   ngnix:
-    #container_name: nginx
-    #we pull the Nginx proxy Docker image
-    #image: nginx:latest
     build:
       context: ./requirements/nginx
     restart: always
@@ -72,15 +67,9 @@ services:
     links:
       - wordpress
     env_file:
-      - .env 
-    #logging:
-      #option:
-       #we have configured the file upload size for the WordPress and phpMyAdmin sites
-        #max-size: "10m"
-       #max-file: "3"
-
-   # depends_on:
-    #  - mariadb
+      - .env
+    networks:
+      - my-wordpress-network  
 
   mariadb:
     #container_name: mariadb
@@ -92,14 +81,14 @@ services:
       - .env
     volumes:
       - db_data:/var/lib/mysql
-
+    networks:
+      - my-wordpress-network
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}  
     
-
-
-  volumes:
-    data_db:
-    data_wordpress:
-
-  network:
-
-  entrypoint:
+  networks:
+    my-wordpress-network:
+      driver: bridge

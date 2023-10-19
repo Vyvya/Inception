@@ -16,6 +16,6 @@ ENV MYSQL_PASSWORD=vg
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Set the entrypoint to the MariaDB entrypoint script
-#ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["tail", "-f"]#
-#MD ["mysqld"]
+ENTRYPOINT ["docker-entrypoint.sh"]
+#CMD ["tail", "-f"]
+CMD ["mysqld"]
