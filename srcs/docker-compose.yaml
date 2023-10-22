@@ -17,78 +17,93 @@
 
 version: '3.9'
 
-services:
-  
-  wordpress:
-    #image: wordpress:latest
-    #container_name: wordpress-app
-    build:
-      context: ./requirements/wordpress
-    restart: always
-    expose:
-      - "8080:8000"
-    volumes:
-      volumes:
-      #- ./config/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
-      - wordpress_data:/var/www/html
-      - ./wordpress:/var/www/html
-    env_file:
-      - .env
-    networks:
-      - my-wordpress-network
-    environment:
-      WORDPRESS_DP_HOST: mariadb
-      WORDPRESS_DB_NAME: "${MYSQL_DATABASE}"
-      WORDPRESS_DB_USER: "${MYSQL_USER}"
-      WORDPRESS_DB_PASSWORD: "${MYSQL_PASSWORD}"
-    depends_on:
-      - mysql
-    links:
-      - mysql  
+volumes:
+        wordpress:
+                name: wordpress
+                driver: local
+                driver_opts:
+                        device: /home/vgejno/data/wordpress
+                        o: bind
+                        type: none
+        mariadb:
+                name: mariadb
+                drive: local
+                driver_opts:
+                        device: /home/vgejno/data/mariadb
+                        o: bind
+                        type: none
+networks:
+  inception:
+    name: inception
+    #driver: bridge
 
+services:
   ngnix:
-    build:
-      context: ./requirements/nginx
+    container_name: nginx
+    build: ./requirements/nginx/.
+      #context: ./requirements/nginx
     restart: always
     #build: .
     #expose ports 80 and 443 to the host container which will be used to connect to the outer world
     ports:
-      - 80:80
+      #- 80:80
       - 443:443
+    depends_on:
+      - wordpress  
     volumes:
-      - ./nginx/conf:/etc/nginx/conf.d
-      - /wordpress_data/html:/var/www/html
+      #- ./nginx/conf:/etc/nginx/conf.d
+      - wordpress:/var/www/html
       #created volumes for the Nginx HTML page
-      - ./nginx/html:/usr/share/nginx/html
+      #- ./nginx/html:/usr/share/nginx/html
       #directory where all the SSL certificates will be stored
-      - ./nginx/certs:/etc/nginx/certs
+      #- ./nginx/certs:/etc/nginx/certs
       #directory for Virtual hosts which is what we used above to add additional nginx configuration
       #- ./nginx/vhost:/etc/nginx/vhost.d
-    links:
-      - wordpress
+    networks:
+      - inception  
+    #links:
+      #- wordpress
+    #env_file:
+      #- .env
+  wordpress:
+    #image: wordpress:latest
+    container_name: wordpress-app
+    build: ./requirements/wordpress/.
+      #context: ./requirements/wordpress
+    restart: always
+    expose:
+      - "8080:8000"
+    volumes:
+      - wordpress:/var/www/html
+      #- ./config/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
+      #- wordpress_data:/var/www/html
     env_file:
       - .env
     networks:
-      - my-wordpress-network  
-
+      - inception
+    depends_on:
+      - mariadb
+    #environment:
+      #WORDPRESS_DP_HOST: mariadb
+      #WORDPRESS_DB_NAME: "${MYSQL_DATABASE}"
+      #WORDPRESS_DB_USER: "${MYSQL_USER}"
+      #WORDPRESS_DB_PASSWORD: "${MYSQL_PASSWORD}"
+    #links:
+      #- mariadb  
   mariadb:
-    #container_name: mariadb
+    container_name: mariadb
     #image:
-    build:
-      context: ./requirements/mariadb
+    build: ./requirements/mariadb/.
+      #context: ./requirements/mariadb
     restart: always
     env_file:
       - .env
     volumes:
-      - db_data:/var/lib/mysql
+      - mariadb:/var/lib/mysql
     networks:
-      - my-wordpress-network
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}  
-    
-  networks:
-    my-wordpress-network:
-      driver: bridge
+      - inception
+    #environment:
+      #MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      #MYSQL_DATABASE: ${MYSQL_DATABASE}
+      #MYSQL_USER: ${MYSQL_USER}
+      #MYSQL_PASSWORD: ${MYSQL_PASSWORD}

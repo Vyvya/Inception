@@ -8,8 +8,11 @@ RUN apt update && apt upgrade -y \
 RUN wget https://wordpress.org/latest.tar.gz -P /var/www \
     && cd /var/www && tar -xzf latest.tar.gz && rm latest.tar.gz
 
+#WP-CLI is the command-line interface for WordPress. You can update plugins, 
+#configure multisite installations and much more, without using a web browser
 RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 RUN chmod +x wp-cli.phar
+#RUN sudo mv wp-cli.phar /usr/local/bin/wp
 RUN mv wp-cli.phar /usr/local/bin/wp
 #RUN cp conf/wp-config.php /var/www/html/wp-config.php
 
@@ -31,7 +34,8 @@ RUN mkdir -p /etc/php/7.3/fpm
 # Set the working directory
 WORKDIR /var/www/html
 
+COPY conf/auto_config.sh /var/www/html/auto_config.sh
 # Define the entry point and command
-#ENTRYPOINT ["auto_config.sh"]
-#CMD ["php-fpm"]
-CMD ["tail", "-f"]
+ENTRYPOINT ["auto_config.sh"]
+CMD ["php-fpm"]
+#CMD ["tail", "-f"]

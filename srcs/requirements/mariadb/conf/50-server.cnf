@@ -18,6 +18,6 @@ datadir = /var/lib/mysql
 #où MySQL peut trouver la socket pour communiquer avec
 socket  = /run/mysqld/mysqld.sock
 #on précise également que toutes les IP du réseau peuvent se connecter, pour cela c’est la ligne  bind_address=* , qui en gros veut dire:  bind_address=XXX.XXX.XX.XX
-bind_address=*
+bind_address = 0.0.0.0
 port = 3306
 user = mysql

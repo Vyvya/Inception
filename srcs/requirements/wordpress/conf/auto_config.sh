@@ -17,5 +17,11 @@ else
     exit 1  # You can choose to exit the script or handle errors differently
 fi
 
+# Create the first user (e.g., administrator)
+wp user create username1 admin@example.com --role=administrator --user_pass=some_password
+
+# Create the second user
+wp user create username2 user@example.com --user_pass=another_password
+
 # Start PHP-FPM
 /usr/sbin/php-fpm7.3 -F

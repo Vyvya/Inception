@@ -19,3 +19,7 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["docker-entrypoint.sh"]
 #CMD ["tail", "-f"]
 CMD ["mysqld"]
+
+#alternative: mysqld_safe is typically used to start the MySQL server when the system is booting,
+#and it is also used to start and stop the MySQL server manually
+#CMD ["/usr/bin/mysqld_safe"]

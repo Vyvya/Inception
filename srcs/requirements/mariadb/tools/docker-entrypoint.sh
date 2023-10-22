@@ -1,28 +1,25 @@
-#Create a database
+#Create a database and user and give him the access to the database then FLUCH PRIVILEGES
 
-#démarrer MySQL
-#La commande service permet de démarrer MySQL avec la commande associée
+#start MySQL
 service mysql start;
 
-#créer le table, du nom de la variable d’environnement SQL_DATABASE, indiqué dans mon fichier .env qui sera envoyé par le docker-compose.yml
+#create a table, with the name of the environmental variable SQL_DATABASE, defined in .env, send by docker-compose.yaml
 mysql -e "CREATE DATABASE IF NOT EXISTS ${SQL_DATABASE};"
 
-#créer un utilisateur qui pourra la manipuler
-#Je crée l’utilisateur SQL_USER s’il n’existe pas, avec le mot de passe SQL_PASSWORD , toujours à indiquer dans le .env
+#create a user: SQL_USER, if it doesnt exist, with password SQL_PASSWORD, defined in .env
 mysql -e "CREATE USER IF NOT EXISTS ${SQL_USER}@'localhost' IDENTIFIED BY '${SQL_PASSWORD}';"
 
-#donner tous les droits à cet utilisateur
-#les droits à l’utilisateur SQL_USER avec le mot de passe SQL_PASSWORD pour la table SQL_DATABASE
+#give all rights to SQL_USER, with password SQL_PASSWORD for the table SQL_DATABASE
 mysql -e "GRANT ALL PRIVILEGES ON ${SQL_DATABASE}.* TO ${SQL_USER}@'%' IDENTIFIED BY '${SQL_PASSWORD}';"
 
-#Je change les droits root par localhost, avec le mot de passe root SQL_ROOT_PASSWORD
+#change the rights root of localhost, with password root SQL_ROOT_PASSWORD
 mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${SQL_ROOT_PASSWORD}';"
 
-#Plus qu’à rafraichir tout cela pour que MySQL le prenne en compte.
+#refresh all, so that MySQL takes changes into account
 mysql -e "FLUSH PRIVILEGES;"
 
-#redémarrer MySQL pour que tout cela soit effectif
+#restart MySQL for all this to take effect
 mysqladmin -u root -p$SQL_ROOT_PASSWORD shutdown
 
-#Je commence déjà par éteindre MySQL.
+#to keep container running
 exec mysqld_safe
