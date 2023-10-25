@@ -5,19 +5,14 @@
 # 2. "/etc/mysql/conf.d/*.cnf" to set global options.
 # 3. "/etc/mysql/mariadb.conf.d/*.cnf" to set MariaDB-only options.
 # 4. "~/.my.cnf" to set user-specific options.
-#
-# If the same option is defined multiple times, the last one will apply.
-#
-# One can use all long options that the program supports.
-# Run program with --help to get a list of available options and with
-# --print-defaults to see which it would actually understand and use.
 
 [mysqld]
-#dossier qui stockera notre base de données
+#folder to stock the database
 datadir = /var/lib/mysql
-#où MySQL peut trouver la socket pour communiquer avec
-socket  = /run/mysqld/mysqld.sock
-#on précise également que toutes les IP du réseau peuvent se connecter, pour cela c’est la ligne  bind_address=* , qui en gros veut dire:  bind_address=XXX.XXX.XX.XX
-bind_address = 0.0.0.0
+#socket to communicate for MySQL
+#socket  = /run/mysqld/mysqld.sock
+#connection with all IPs open
+bind-address = 0.0.0.0
 port = 3306
-user = mysql
+user = root
+skip-networking = false

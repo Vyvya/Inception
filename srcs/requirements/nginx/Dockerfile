@@ -1,22 +1,28 @@
 FROM debian:bullseye
 
-RUN apt update && apt upgrade -y
-RUN apt install nginx -y
-RUN apt install vim -y
-RUN apt install curl -y
+RUN apt-get update && apt install nginx -y vim curl openssl
+RUN apt-get install apt-transport-https -y
 
 RUN mkdir -p /etc/nginx/ssl
-RUN apt install openssl -y
-RUN openssl req -x509 -nodes -out /etc/nginx/ssl/inception.crt \
-	-keyout /etc/nginx/ssl/inception.key \
-	-subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=vgejno.42.fr/UID=login"
 
-RUN mkdir -p /var/run/nginx
+#RUN openssl req -x509 -nodes -out /etc/nginx/ssl/inception.crt \
+#	-keyout /etc/nginx/ssl/inception.key \
+#	-subj "/C=FR/ST=Lausanne/L=Lausanne/O=42/OU=42/CN=vgejno.42.fr/UID=vgejno"
+
+RUN openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes \
+		-out /etc/nginx/ssl/vgejno.crt \
+		-keyout /etc/nginx/ssl/vgejno.key \
+		-subj "/C=FR/ST=Lausanne/L=Lausanne/O=42/OU=42/CN=vgejno/UID=vgejno"
+
+#RUN mkdir -p /var/run/nginx
+RUN mkdir -p run/nginx
 
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 
-RUN chmod 755 /var/www/html
+RUN chmod 777 /var/www/html
 RUN chown -R www-data:www-data /var/www/html
+
+EXPOSE 443
 
 CMD [ "nginx", "-g", "daemon off;" ]
 
@@ -27,7 +33,6 @@ CMD [ "nginx", "-g", "daemon off;" ]
 #RUN --mount=type=ssh ....
 #RUN --network=host
 
-#EXPOSE 443
 
 #VOLUME []
 
