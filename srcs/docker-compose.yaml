@@ -1,58 +1,36 @@
-# Using Compose (key feature: to have multiple isolated environments on a single host) is essentially a three-step process:
-# 1.Define your app's environment with a Dockerfile so it can be reproduced anywhere.
-# 2.Define the services that make up your app in a compose.yaml file so they can be run together in an isolated environment.
-# 3.Run docker compose up and the Docker compose command starts and runs your entire app.
-
-#Automated testing environments
-#An important part of any Continuous Deployment or Continuous Integration process is the automated test suite. 
-#Automated end-to-end testing requires an environment in which to run tests. Compose provides a convenient way to create and destroy 
-#isolated testing environments for your test suite. By defining the full environment in a Compose file, 
-#you can create and destroy these environments in just a few commands:
-#$ docker compose up -d
-#$ ./run_tests
-#$ docker compose down
-
-#CMD:
-#docker compose up
-
-version: '3.9'
+version: '3.3'
 
 volumes:
-        wordpress:
-                name: wordpress
-                driver: local
-                driver_opts:
-                        device: /home/vgejno/data/wordpress
-                        o: bind
-                        type: none
-        mariadb:
-                name: mariadb
-                drive: local
-                driver_opts:
-                        device: /home/vgejno/data/mariadb
-                        o: bind
-                        type: none
+  wordpress_data:
+    driver: local
+    driver_opts:
+      device: /home/vgejno/data/wordpress
+      o: bind
+      type: volume
+  mariadb_data:
+    driver: local
+    driver_opts:
+      device: /home/vgejno/data/mariadb
+      o: bind
+      type: volume
 networks:
   inception:
     name: inception
-    #driver: bridge
 
 services:
-  ngnix:
+  nginx:
     container_name: nginx
     build: ./requirements/nginx/.
-      #context: ./requirements/nginx
     restart: always
     #build: .
     #expose ports 80 and 443 to the host container which will be used to connect to the outer world
     ports:
-      #- 80:80
       - 443:443
     depends_on:
       - wordpress  
     volumes:
       #- ./nginx/conf:/etc/nginx/conf.d
-      - wordpress:/var/www/html
+      - wordpress_data:/var/www/html
       #created volumes for the Nginx HTML page
       #- ./nginx/html:/usr/share/nginx/html
       #directory where all the SSL certificates will be stored
@@ -67,15 +45,15 @@ services:
       #- .env
   wordpress:
     #image: wordpress:latest
-    container_name: wordpress-app
+    container_name: wordpress
     build: ./requirements/wordpress/.
       #context: ./requirements/wordpress
     restart: always
     expose:
-      - "8080:8000"
+      - "80"
     volumes:
-      - wordpress:/var/www/html
-      #- ./config/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
+      - /home/vgejno/data/wordpress_data:/var/www/html
+      - ./config/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
       #- wordpress_data:/var/www/html
     env_file:
       - .env
@@ -83,13 +61,7 @@ services:
       - inception
     depends_on:
       - mariadb
-    #environment:
-      #WORDPRESS_DP_HOST: mariadb
-      #WORDPRESS_DB_NAME: "${MYSQL_DATABASE}"
-      #WORDPRESS_DB_USER: "${MYSQL_USER}"
-      #WORDPRESS_DB_PASSWORD: "${MYSQL_PASSWORD}"
-    #links:
-      #- mariadb  
+      
   mariadb:
     container_name: mariadb
     #image:
@@ -99,11 +71,6 @@ services:
     env_file:
       - .env
     volumes:
-      - mariadb:/var/lib/mysql
+      - mariadb_data:/var/lib/mysql
     networks:
       - inception
-    #environment:
-      #MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      #MYSQL_DATABASE: ${MYSQL_DATABASE}
-      #MYSQL_USER: ${MYSQL_USER}
-      #MYSQL_PASSWORD: ${MYSQL_PASSWORD}

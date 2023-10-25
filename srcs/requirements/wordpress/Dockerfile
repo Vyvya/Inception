@@ -4,6 +4,16 @@ FROM debian:bullseye
 RUN apt update && apt upgrade -y \
 	&& apt-get -y install wget php7.3 php-fpm php-mysql mariadb-client
 
+# Set the working directory
+USER www-data:www-data
+WORKDIR /home/www-data
+
+# Create the directory within the container
+RUN mkdir -p /var/www/html/wp-content/uploads
+
+# Ensure the directory is owned by the web server user (www-data)
+RUN chown -R www-data:www-data /var/www/html/wp-content/uploads
+
 # Download and extract WordPress
 RUN wget https://wordpress.org/latest.tar.gz -P /var/www \
     && cd /var/www && tar -xzf latest.tar.gz && rm latest.tar.gz
@@ -31,11 +41,11 @@ RUN mkdir -p /etc/php/7.3/fpm
 # Copy your custom PHP configuration file (if needed)
 #COPY conf/php.ini /etc/php/7.3/fpm/php.ini
 
-# Set the working directory
-WORKDIR /var/www/html
+
 
 COPY conf/auto_config.sh /var/www/html/auto_config.sh
 # Define the entry point and command
-ENTRYPOINT ["auto_config.sh"]
-CMD ["php-fpm"]
+#ENTRYPOINT ["/bin/sh", "/var/www/html/auto_config.sh"]
+#CMD ["php-fpm", "-F"]
+CMD ["sleep", "infinity"]
 #CMD ["tail", "-f"]
