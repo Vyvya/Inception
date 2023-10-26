@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM debian:buster
 
 RUN apt-get update && apt-get install -y mariadb-server mariadb-client \
     bash vim \
@@ -7,13 +7,14 @@ RUN apt-get update && apt-get install -y mariadb-server mariadb-client \
 # Create the mysql user and group
 RUN groupadd -r mysql && useradd -r -g mysql mysql
 
-RUN mkdir -p /var/run/mysqld && /var/lib/mysql \
-    chown -R mysql:mysql /var/run/mysqld /var/lib/mysql
+RUN mkdir -p /var/run/mysqld /var/lib/mysql \
+    && chown -R mysql:mysql /var/run/mysqld /var/lib/mysql
     #sed -i s/127.0.0.1/0.0.0.0/ /etc/mysql/mariadb.conf.d/50-server.cnf
     
 RUN chmod 755 /var/run/mysqld
 
 COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+RUN /etc/mysql/mariadb.conf.d
 
 # Copy the entrypoint script and make it executable
 COPY ./tools/docker-entrypoint.sh /usr/local/bin/

@@ -1,4 +1,5 @@
 #!/bin/sh
+set -x
 sleep 10
 
 # Set up the database configuration with WP-CLI, creates a configuration file
@@ -23,7 +24,10 @@ wp theme install hestia --activate --allow-root --path='/var/www/html'
  fi
 
 # Start PHP-FPM
-/usr/sbin/php-fpm7.3 -F
+#/usr/sbin/php-fpm7.3 -F
+if [ ! -d /run/php ]; then
+    mkdir -p /run/php
+fi
 
 exec "$@"
 

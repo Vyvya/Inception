@@ -22,7 +22,7 @@ networks:
 services:
   nginx:
     container_name: nginx
-    imahe: nginx
+    image: nginx
     build: ./requirements/nginx/.
     restart: always
     ports:
@@ -39,7 +39,7 @@ services:
 
   wordpress:
     container_name: wordpress
-    image: wordpress:latest
+    image: wordpress
     build:
       context: ./requirements/wordpress
       dockerfile: Dockerfile
