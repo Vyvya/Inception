@@ -38,7 +38,7 @@ RUN echo "clear_env = no" >> /etc/php/7.3/fpm/php.ini
 #RUN sed -i 's|listen = /run/php/php7.3-fpm.sock|listen = wordpress:9000|' /etc/php/7.3/fpm/pool.d/www.conf
 
 # Give ownership to the web server user (www-data)
-RUN	chown -R root:root /var/www/wordpress
+RUN	chown -R root:root /var/www/html
 
 # Create the necessary directory structure for PHP configuration
 

@@ -22,7 +22,7 @@ networks:
 services:
   nginx:
     container_name: nginx
-    image: nginx
+    image: inception_nginx
     build: ./requirements/nginx/.
     restart: always
     ports:
@@ -39,7 +39,7 @@ services:
 
   wordpress:
     container_name: wordpress
-    image: wordpress
+    image: inception_wordpress
     build:
       context: ./requirements/wordpress
       dockerfile: Dockerfile
@@ -59,7 +59,7 @@ services:
       
   mariadb:
     container_name: mariadb
-    image: mariadb
+    image: inception_mariadb
     build: ./requirements/mariadb/.
       #context: ./requirements/mariadb
     restart: always

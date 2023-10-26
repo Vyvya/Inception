@@ -5,7 +5,9 @@ RUN apt-get update && apt-get install -y mariadb-server mariadb-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Create the mysql user and group
-RUN groupadd -r mysql && useradd -r -g mysql mysql
+#RUN groupadd -r mysql && useradd -r -g mysql mysql
+RUN groupadd -r mysql || true
+RUN useradd -r -g mysql mysql || true
 
 RUN mkdir -p /var/run/mysqld /var/lib/mysql \
     && chown -R mysql:mysql /var/run/mysqld /var/lib/mysql
