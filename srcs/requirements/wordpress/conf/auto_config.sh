@@ -11,7 +11,7 @@ wp config create --allow-root \
      #--dbhost="$MYSQL_HOSTNAME" \
      --path='/var/www/html'
 
-wp core install --url=$DOMAIN_NAME --title=$WP_TITLE --admin_user=$WP_ADMIN_USR --admin_password=$WP_ADMIN_PWD --admin_email=$WP_ADMIN_EMAIL --allow-root --path='/var/www/html'
+wp core install --url=$DOMAIN_NAME --title=$WP_TITLE --admin_user=$WP_ADMIN_USER --admin_password=$WP_ADMIN_PASSWORD --admin_email=$WP_ADMIN_EMAIL --allow-root --path='/var/www/html'
 wp user create $MYSQL_USER1 $MYSQL_USER_MAIL1 --user_pass=$MYSQL_PASSWORD1 --role=author --allow-root --path='/var/www/html'
 wp theme install hestia --activate --allow-root --path='/var/www/html'
 
