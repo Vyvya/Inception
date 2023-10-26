@@ -14,7 +14,7 @@ RUN mkdir -p /var/run/mysqld /var/lib/mysql \
 RUN chmod 755 /var/run/mysqld
 
 COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
-RUN /etc/mysql/mariadb.conf.d
+RUN chmod 755 /etc/mysql/mariadb.conf.d
 
 # Copy the entrypoint script and make it executable
 COPY ./tools/docker-entrypoint.sh /usr/local/bin/
