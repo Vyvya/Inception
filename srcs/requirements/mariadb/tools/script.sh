@@ -1,10 +1,10 @@
 #!/bin/sh
 
 # Create a database and user and give them access to the database
-# mysql_install_db
-# /etc/init.d/mysql start
+mysql_install_db
+/etc/init.d/mysql start
 
-service mysql start
+#service mysql start
 
 # Create a table with the name of the environmental variable SQL_DATABASE
 # defined in .env, sent by docker-compose.yaml
@@ -27,9 +27,9 @@ echo "ALTER USER 'root'@'%' IDENTIFIED BY '${MYDB_ROOT_PWD}';" >> mydb.sql
 echo "FLUSH PRIVILEGES;" >> mydb.sql
 
 # Stop the MySQL server
-# /etc/init.d/mysql stop
+/etc/init.d/mysql stop
 
-kill $(cat /var/run/mysqld/mysqld.pid)
+#kill $(cat /var/run/mysqld/mysqld.pid)
 # To keep the container running
 exec "$@"
 # mysqld

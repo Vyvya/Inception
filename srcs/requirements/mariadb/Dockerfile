@@ -25,15 +25,15 @@ RUN apt-get update && apt-get install -y mariadb-server mariadb-client \
 # RUN chmod 755 /var/run/mysqld
 
 COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/
-RUN chmod 755 /etc/mysql/mariadb.conf.d
+# RUN chmod 755 /etc/mysql/mariadb.conf.d
 
 # Copy the entrypoint script and make it executable
-COPY ./tools/script.sh /
-RUN chmod +x /script.sh
+COPY ./tools/script.sh /usr/local/bin/script.sh
+RUN chmod +x /usr/local/bin/script.sh
 
-# ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+# ENTRYPOINT ["/usr/local/bin/script.sh"]
 #CMD ["tail", "-f"]
-CMD ["/script.sh"]
+CMD ["/usr/local/bin/script.sh"]
 
 # EXPOSE 3306
 # CMD ["mysqld", "--user=mysql", "--datadir=/var/lib/mysql"]

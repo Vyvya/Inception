@@ -9,14 +9,14 @@ RUN apt-get update && apt-get -y install wget \
 
 # Set the working directory
 #USER www-data:www-data
-WORKDIR /var/www/html
+#WORKDIR /var/www/html
 
 # Create the directory within the container
 #RUN mkdir -p /var/www/html/wp-content/uploads
 
 # Ensure the directory is owned by the web server user (www-data)
-RUN chown -R www-data:www-data /var/www/
-RUN chmod -R 755 /var/www/html/
+# RUN chown -R www-data:www-data /var/www/
+# RUN chmod -R 755 /var/www/html/
 
 # Download and extract WordPress
 RUN wget https://wordpress.org/latest.tar.gz -P /var/www/html \
@@ -24,10 +24,10 @@ RUN wget https://wordpress.org/latest.tar.gz -P /var/www/html \
 
 #WP-CLI is the command-line interface for WordPress. You can update plugins, 
 #configure multisite installations and much more, without using a web browser
-RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-RUN chmod +x wp-cli.phar
+#RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+#RUN chmod +x wp-cli.phar
 #RUN sudo mv wp-cli.phar /usr/local/bin/wp
-RUN mv wp-cli.phar /usr/local/bin/wp
+#RUN mv wp-cli.phar /usr/local/bin/wp
 #RUN cp conf/wp-config.php /var/www/html/wp-config.php
 
 # Create the directory if it doesn't exist
@@ -50,12 +50,14 @@ EXPOSE 9000
 RUN mkdir -p /etc/php/7.3/fpm
 COPY conf/www.conf /etc/php/7.3/fpm/pool.d/www.conf
 
-COPY conf/auto_config.sh /auto_config.sh
+COPY conf/auto_config.sh /usr/local/bin/auto_config.sh
 #COPY conf/auto_config.sh /var/www/html/auto_config.sh
-RUN chmod +x /auto_config.sh
+RUN chmod +x /usr/local/bin/auto_config.sh
 
+# COPY tools/wp_config.php /var/www/html/wp-config.php
+# WORKDIR /var/www/html/
 # Define the entry point and command
-ENTRYPOINT ["/bin/sh", "/auto_config.sh"]
-#CMD ["php-fpm", "-F"]
+ENTRYPOINT ["/bin/sh", "/usr/local/bin/auto_config.sh"]
+CMD ["php-fpm", "-F"]
 #CMD ["sleep", "infinity"]
 #CMD ["tail", "-f"]
