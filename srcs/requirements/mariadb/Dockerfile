@@ -6,27 +6,37 @@ RUN apt-get update && apt-get install -y mariadb-server mariadb-client \
 
 # Create the mysql user and group
 #RUN groupadd -r mysql && useradd -r -g mysql mysql
-RUN groupadd -r mysql || true
-RUN useradd -r -g mysql mysql || true
+# RUN groupadd -r mysql || true
+# RUN useradd -r -g mysql mysql || true
 
-RUN mkdir -p /var/run/mysqld /var/lib/mysql \
-    && chown -R mysql:mysql /var/run/mysqld /var/lib/mysql
+# RUN userdel mysql
+# RUN useradd -u 999 mysql
+
+# RUN mkdir -p /mariadb_data/mysql \
+#     && chown -R mysql:mysql /mariadb_data/mysql
+
+# RUN mkdir -p /mariadb_data \
+#     && chown -R mysql:mysql /mariadb_data
+
+# RUN mkdir -p /var/run/mysqld /var/lib/mysql \
+#     && chown -R mysql:mysql /var/run/mysqld /var/lib/mysql
     #sed -i s/127.0.0.1/0.0.0.0/ /etc/mysql/mariadb.conf.d/50-server.cnf
     
-RUN chmod 755 /var/run/mysqld
+# RUN chmod 755 /var/run/mysqld
 
-COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/
 RUN chmod 755 /etc/mysql/mariadb.conf.d
 
 # Copy the entrypoint script and make it executable
-COPY ./tools/docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+COPY ./tools/script.sh /
+RUN chmod +x /script.sh
 
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+# ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 #CMD ["tail", "-f"]
+CMD ["/script.sh"]
 
-EXPOSE 3306
-CMD ["mysqld", "--user=mysql", "--datadir=/var/lib/mysql"]
+# EXPOSE 3306
+# CMD ["mysqld", "--user=mysql", "--datadir=/var/lib/mysql"]
 
 #alternative: mysqld_safe is typically used to start the MySQL server when the system is booting,
 #and it is also used to start and stop the MySQL server manually

@@ -4,14 +4,14 @@ volumes:
   wordpress_data:
     driver: local
     driver_opts:
-      device: /home/vgejno/data/wordpress
+      device: ${HOST_VOLUME_ROOT}/wordpress
       o: bind
       type: volume
 
   mariadb_data:
     driver: local
     driver_opts:
-      device: /home/vgejno/data/mariadb
+      device: ${HOST_VOLUME_ROOT}/mariadb
       o: bind
       type: volume
 
@@ -30,7 +30,7 @@ services:
     depends_on:
       - wordpress  
     volumes:
-      - mariadb_data:/var/lib/mysql
+      #- mariadb_data:/var/lib/mysql
       - wordpress_data:/var/www/html
     networks:
       - inception  
@@ -60,13 +60,13 @@ services:
   mariadb:
     container_name: mariadb
     image: inception_mariadb
-    build: ./requirements/mariadb/.
+    build: ./requirements/mariadb
       #context: ./requirements/mariadb
     restart: always
     env_file:
       - .env
     volumes:
       - mariadb_data:/var/lib/mysql
-      - wordpress_data:/var/www/html
+      # - wordpress_data:/var/www/html
     networks:
       - inception

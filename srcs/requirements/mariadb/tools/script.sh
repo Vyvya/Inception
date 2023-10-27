@@ -1,31 +1,38 @@
 #!/bin/sh
 
 # Create a database and user and give them access to the database
-mysql_install_db
-/etc/init.d/mysql start
+# mysql_install_db
+# /etc/init.d/mysql start
+
+service mysql start
 
 # Create a table with the name of the environmental variable SQL_DATABASE
 # defined in .env, sent by docker-compose.yaml
-mysql -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
+# mysql -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
+echo "CREATE DATABASE IF NOT EXISTS ${MYDB_NAME};" > mydb.sql
+
 
 # Create a user: SQL_USER, if it doesn't exist, with password SQL_PASSWORD,
 # defined in .env
-mysql -e "CREATE USER IF NOT EXISTS ${MYSQL_USER}@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+# mysql -e to execute cmd directly
+echo "CREATE USER IF NOT EXISTS ${MYDB_USER}@'%' IDENTIFIED BY '${MYDB_PWD}';" >> mydb.sql
 
 # Give all rights to SQL_USER, with password SQL_PASSWORD, for the table SQL_DATABASE
-mysql -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO ${MYSQL_USER}@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+echo "GRANT ALL PRIVILEGES ON ${MYDB_NAME}.* TO ${MYDB_USER}@'%' ;" >> mydb.sql #IDENTIFIED BY '${MYSQL_PASSWORD}'
 
 # Change the root password
-mysql -e "ALTER USER 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
+echo "ALTER USER 'root'@'%' IDENTIFIED BY '${MYDB_ROOT_PWD}';" >> mydb.sql
 
 # Refresh privileges for MySQL
-mysql -e "FLUSH PRIVILEGES;"
+echo "FLUSH PRIVILEGES;" >> mydb.sql
 
 # Stop the MySQL server
-/etc/init.d/mysql stop
+# /etc/init.d/mysql stop
 
+kill $(cat /var/run/mysqld/mysqld.pid)
 # To keep the container running
 exec "$@"
+# mysqld
 
 #!/bin/sh
 
