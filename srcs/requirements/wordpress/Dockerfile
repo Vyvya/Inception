@@ -21,35 +21,16 @@ RUN chmod +x wp-cli.phar
 RUN mv wp-cli.phar /var/www/html/wordpress
 #RUN cp conf/wp-config.php /var/www/html/wp-config.php
 
-# Create the directory if it doesn't exist
-# RUN mkdir -p /etc/php/7.3/fpm
-
-# RUN echo "clear_env = no" >> /etc/php/7.3/fpm/php.ini
-#RUN sed -i 's|listen = /run/php/php7.3-fpm.sock|listen = wordpress:9000|' /etc/php/7.3/fpm/pool.d/www.conf
-
 # Give ownership to the web server user (www-data)
 RUN	chown -R root:root /var/www/html
-
-# Create the necessary directory structure for PHP configuration
-
-# Copy your custom PHP configuration file (if needed)
-#COPY conf/php.ini /etc/php/7.3/fpm/php.ini
 
 EXPOSE 9000
 
 # RUN chmod +x /run/
 RUN mkdir -p /run/php
-# RUN mkdir -p /etc/php/7.3/fpm
 COPY conf/www.conf /etc/php/7.3/fpm/pool.d/www.conf
 
 COPY conf/auto_config.sh /usr/local/bin/auto_config.sh
-#COPY conf/auto_config.sh /var/www/html/auto_config.sh
-# RUN chmod +x /usr/local/bin/auto_config.sh
 
-# COPY tools/wp_config.php /var/www/html/wp-config.php
-# WORKDIR /var/www/html/
-# Define the entry point and command
 ENTRYPOINT ["/bin/sh", "/usr/local/bin/auto_config.sh"]
-# CMD ["/run/php-fpm", "-F"]
-#CMD ["sleep", "infinity"]
-#CMD ["tail", "-f"]
+
