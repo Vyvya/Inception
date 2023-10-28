@@ -15,8 +15,8 @@ clean:
 	docker rm $$(docker ps -qa);\
 	docker rmi -f $$(docker images -qa);\
 	docker volume rm $$(docker volume ls -q);\
-	#rm -rf home/vgejno/data/wordpress/*
-	#rm -rf home/vgejno/data/mariadb/*
+	rm -rf home/vgejno/data/wordpress/*
+	rm -rf home/vgejno/data/mariadb/*
 
 re: down clean all
 
