@@ -20,4 +20,4 @@ clean:
 
 re: down clean all
 
-.PHONY: up down build	
+.PHONY: up down build

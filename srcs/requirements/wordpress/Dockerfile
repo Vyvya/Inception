@@ -8,26 +8,16 @@ RUN apt-get update && apt-get -y install wget \
     mariadb-client
 
 # Set the working directory
-# USER www-data:www-data
 WORKDIR /var/www/html
-
-# Create the directory within the container
-#RUN mkdir -p /var/www/html/wp-content/uploads
 
 # Ensure the directory is owned by the web server user (www-data)
 RUN chown -R www-data:www-data /var/www/
 RUN chmod -R 755 /var/www/html/
 
-# Download and extract WordPress
-# RUN wget https://wordpress.org/latest.tar.gz -P /var/www/html \
-#     && cd /var/www/html && tar -xzf latest.tar.gz && rm latest.tar.gz
-
 #WP-CLI is the command-line interface for WordPress. You can update plugins, 
 #configure multisite installations and much more, without using a web browser
 RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 RUN chmod +x wp-cli.phar
-# RUN chmod +x /usr/local/bin/wp
-#RUN sudo mv wp-cli.phar /usr/local/bin/wp
 RUN mv wp-cli.phar /var/www/html/wordpress
 #RUN cp conf/wp-config.php /var/www/html/wp-config.php
 
