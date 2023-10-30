@@ -1,15 +1,17 @@
 FROM debian:buster
 
-RUN apt-get update -y && \
-    apt-get install -y mariadb-server mariadb-client sudo openssl && \
+RUN apt-get update -y && apt-get upgrade -y \
+    && apt-get install -y mariadb-server mariadb-client sudo openssl && \
     rm -rf /var/cache/apt/* && \
     mkdir -p /run/mysqld /var/lib/mysql
 
 RUN chown -R mysql:mysql /run/mysqld; chown -R mysql:mysql /var/lib/mysql
+RUN chmod -R 755 /var/lib/mysql
 # COPY ./conf/conf.cnf /etc/mysql/my.cnf
 # RUN mkdir -p /var/run/mysqld \
 #     && chown -R mysql:mysql /var/run/mysqld \
-#     && chmod 755 /var/run/mysqld
+#     && git add .
+
 
 COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 COPY ./conf/50-server.cnf /etc/mysql/my.cnf

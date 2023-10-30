@@ -25,14 +25,14 @@
 port = 3306
 bind-address = 0.0.0.0
 datadir = /var/lib/mysql
-user = root
+user = mysql
 skip-networking = false
 bind-address=0.0.0.0
 log_bin=ON
 pid-file = /run/mysqld/mysqld.pid
 socket = /run/mysqld/mysqld.sock
-[mysqld]
-skip-grant-tables
+#[mysqld]
+#skip-grant-tables
 #
 # Optional setting
 #wsrep_slave_threads=1

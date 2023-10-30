@@ -6,10 +6,10 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 fi
 
 # Start MariaDB in the background
-mysqld --user=mysql --datadir=/var/lib/mysql &
+# mysqld --user=mysql --datadir=/var/lib/mysql &
 
 # Store the PID of the mysqld process
-mysql_pid=$!
+# mysql_pid=$!
 
 # Wait for MariaDB to become available
 until mysqladmin -u root -p${MYSQL_ROOT_PASSWORD} ping >/dev/null 2>&1; do
@@ -18,7 +18,7 @@ done
 
 echo "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD'; FLUSH PRIVILEGES;" | mysql -uroot -p
 echo "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE; GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD'; FLUSH PRIVILEGES;" | mysql -u root -p
-# "ALTER USER 'root'@'localhost' IDENTIFIED BY 'your_new_password';"
+"ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD';"
 
 # ADMIN_PASSWORD=$(openssl passwd -1 "$WP_ADMIN_PASSWORD" | sed 's/\//\\\//g')
 # PASSWORD=$(openssl passwd -1 "$WP_PASSWORD" | sed 's/\//\\\//g')

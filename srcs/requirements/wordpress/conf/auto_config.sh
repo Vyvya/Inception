@@ -7,12 +7,12 @@ if [ ! -f /var/www/html/wp-config.php ]; then
     && cd /var/www/html && tar -xzf latest.tar.gz && rm latest.tar.gz
     wp core download --allow-root
     wp config create --allow-root \
-     --dbname=$WORDPRESS_DB_NAME \
-     --dbuser=$WORDPRESS_DB_USER \
-     --dbpass=$WORDPRESS_DB_PASSWORD \
+     --dbname=$MYSQL_DATABASE \
+     --dbuser=$MYSQL_USER \
+     --dbpass=$MYSQL_PASSWORD \
      --dbhost=$WORDPRESS_DB_HOST:3306 --path='/var/www/html'
-    wp core install --url=$DOMAIN_NAME --title=$WP_TITLE --admin_user=$WP_ADMIN_USER --admin_password=$WP_ADMIN_PWD --admin_email=$WP_ADMIN_EMAIL --allow-root --path='/var/www/html'
-    wp user create $WORDPRESS_DB_USER $DB_EMAIL --user_pass=$WP_PWD --role=author --allow-root --path='/var/www/html'
+    wp core install --url=$DOMAIN_NAME --title=$WORDPRESS_TITLE --admin_user=$WORDPRESS_ADMIN_USER --admin_password=$WORDPRESS_ADMIN_PASSWORD --admin_email=$WORDPRESS_ADMIN_EMAIL --allow-root --path='/var/www/html'
+    wp user create $WORDPRESS_DB_USER $WORDPRESS_DB_EMAIL --user_pass=$WORDPRESS_DB_PASSWORD --role=author --allow-root --path='/var/www/html'
     wp theme install astra --activate --allow-root --path='/var/www/html'
     # Other installation steps
 else

@@ -44,4 +44,3 @@ CMD [ "nginx", "-g", "daemon off;" ]
 #VOLUME []
 
 #ENTRYPOINT [ "executable" ]
-
