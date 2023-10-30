@@ -27,7 +27,7 @@ RUN chmod +x /nginx_script.sh /
 # RUN chmod 777 /var/www/html
 # RUN chown -R www-data:www-data /var/www/html
 
-# ENTRYPOINT [ "/nginx_script.sh" ]
+ENTRYPOINT [ "/nginx_script.sh" ]
 
 EXPOSE 443
 
