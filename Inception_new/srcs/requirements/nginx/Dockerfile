@@ -4,7 +4,7 @@ WORKDIR /tmp/nginx/
 
 RUN apt-get update && apt install -y nginx vim wget
 
-EXPOSE 80
+EXPOSE 443
 COPY /conf .
 RUN chmod +x nginx.conf
 

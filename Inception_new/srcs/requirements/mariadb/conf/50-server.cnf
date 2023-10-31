@@ -4,6 +4,15 @@
 #
 #See the examples of server my.cnf files in /usr/share/mysql
 
+[client]
+protocol    = tcp
+port        = 3306
+socket      = /var/run/mysqld/mysqld.sock
+
+[mysqld_safe]
+socket    = /var/run/mysqld/mysqld.sock
+nice    = 0
+
 #this is read by the standalone daemon and embedded servers
 [server]
 
@@ -25,7 +34,7 @@ lc-messages-dir         = /usr/share/mysql
 
 #Instead of skip-networking the default is now to listen only on
 #localhost which is more compatible and is not less secure.
-bind-address            = 0.0.0.0
+bind-address            = 127.0.0.1
 
 #
 # * Fine Tuning

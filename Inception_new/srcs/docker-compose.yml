@@ -1,12 +1,12 @@
 version: '3.9'
 
 volumes:
-# # #   wordpress_data:
-# # #     driver: local
-# # #     driver_opts:
-# # #       device: /home/vgejno/data/wordpress
-# # #       o: bind
-# # #       type: volume
+  wordpress_data:
+    driver: local
+    driver_opts:
+      device: /home/vgejno/data/wordpress
+      o: bind
+      type: none
 
   mariadb_data:
     driver: local
@@ -15,54 +15,57 @@ volumes:
       o: bind
       type: none
 
-# networks:
-#   inception:
-#     driver: bridge
+networks:
+  inception:
+    driver: bridge
 
 services:
   nginx:
     container_name: nginx
-    image: nginx
+    # image: nginx
     build: requirements/nginx
-    restart: on-failure
+    restart: always
     ports:
-      - "443:443"
-    # depends_on:
-    #   - wordpress  
-    # volumes:
-    #   - wordpress_data:/var/www/html
-    # networks:
-    #   - inception  
+      - 443:443
+    volumes:
+      - wordpress_data:/var/www/html
+    depends_on:
+      - wordpress  
+    networks:
+      - inception  
     env_file:
       - .env
 
-  # wordpress:
-  #   container_name: wordpress
-  #   image: wordpress
-  #   build:
-  #     context: ./requirements/wordpress
-  #     dockerfile: Dockerfile
-  #   restart: always
-  #   volumes:
-  #     - wordpress_data:/var/www/html
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - inception
-  #   depends_on:
-  #     - mariadb
+  wordpress:
+    container_name: wordpress
+    # image: wordpress
+    build: ./requirements/wordpress
+      # context: ./requirements/wordpress
+      # dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - wordpress_data:/var/www/wordpress
+    depends_on:
+      - mariadb
+    ports:
+      - 9000
+    networks:
+      - inception
+    env_file:
+      - .env
       
   mariadb:
     container_name: mariadb
-    image: mariadb
+    # image: mariadb
     build: ./requirements/mariadb
   #     #context: ./requirements/mariadb
     restart: always
-    env_file:
-      - .env
-    hostname: localhost  
+    ports:
+      - 3306:3306 
     volumes:
       - mariadb_data:/var/lib/mysql
-      # - wordpress_data:/var/www/html
-    # networks:
-    #   - inception
+      - wordpress_data:/var/www/html
+    networks:
+      - inception
+    env_file:
+      - .env

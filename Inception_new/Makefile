@@ -1,22 +1,39 @@
+include srcs/.env
+export
+
+DC = docker compose 
+CDIR = srcs
+CFILE = ${CDIR}/docker-compose.yml
+ARGS = -f ${CFILE}
+
 all:
 	docker compose -f ./srcs/docker-compose.yml up -d --build
 
-up:
+mkdir:
+	mkdir /home/vgejno/data /home/vgejno/data/wordpress /home/vgejno/data/mariadb
+
+start:
 	docker compose -f ./srcs/docker-compose.yml up -d
 
 build:
-	docker compose ./srcs/docker-compose.yml up -d --build
+	docker compose ./srcs/docker-compose.yml build
 
 down:
 	docker compose -f ./srcs/docker-compose.yml down
 
-clean:
-	docker stop $$(docker ps -qa);\
+stop:
+	cd ./srcs && docker compose stop
+
+clean: stop
 	docker rm $$(docker ps -qa);\
 	docker rmi -f $$(docker images -qa);\
 	docker volume rm $$(docker volume ls -q);\
 	rm -rf home/vgejno/data/wordpress/*
 	rm -rf home/vgejno/data/mariadb/*
+	rm -rf tmp/data/wordpress/*
+	rm -rf tmp/data/mariadb/*
+	yes | docker system prune -a --force
+	yes | docker volume prune
 
 re: down clean all
 
