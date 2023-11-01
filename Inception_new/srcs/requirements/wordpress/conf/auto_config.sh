@@ -25,6 +25,6 @@ fi
 #     mkdir -p /run/php
 # fi
 
-/usr/sbin/php-fpm7.3 -F  --nodaemonize
+/usr/sbin/php-fpm7.3 -F # --nodaemonize
 
 # exec "$@"
