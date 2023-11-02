@@ -23,30 +23,50 @@ services:
   nginx:
     container_name: nginx
     # image: nginx
-    build: requirements/nginx
+    build:
+      context: ./requirements/nginx
+      args:
+        NX_DOMAIN_NAME: ${DOMAIN_NAME}
+        NX_USER_ADMIN_EMAIL: ${USER_ADMIN_EMAIL}
     restart: always
     ports:
       - 443:443
+      - 80:80
     volumes:
       - wordpress_data:/var/www/wordpress
     depends_on:
       - wordpress  
     networks:
       front:
-    args:
-      NX_DOMAIN_NAME: ${DOMAINE_NAME}
-      NX_USER_ADMIN_EMAIL: ${USER_ADMIN_EMAIL}
     env_file:
       - .env
 
   wordpress:
     container_name: wordpress
     # image: wordpress
-    build: ./requirements/wordpress
-      # context: ./requirements/wordpress
+    build:
+      context: ./requirements/wordpress
+      args:
+        WP_DB_HOST: ${DB_HOST}
+        WP_DB_NAME: ${DB_NAME}
+        WP_DB_USER: ${DB_USER}
+        WP_DB_PASSWORD: ${DB_PASSWORD}
     restart: always
+    ports:
+      - 9000:9000
     volumes:
       - wordpress_data:/var/www/wordpress
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - USER_NAME=${USER_NAME}
+      - USER_EMAIL=${USER_EMAIL}
+      - USER_ADMIN_EMAIL=${USER_ADMIN_EMAIL}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - TITLE=${TITLE}
     depends_on:
       - mariadb
     networks:
@@ -63,6 +83,11 @@ services:
     restart: always
     volumes:
       - mariadb_data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     networks:
       back:
         aliases:

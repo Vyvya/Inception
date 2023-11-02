@@ -13,7 +13,7 @@ RUN mkdir /etc/nginx/ssl
 RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 		-keyout /etc/ssl/private/nginx-selfsigned.key \
 		-out /etc/ssl/certs/nginx-selfsigned.crt \
-		-subj "/C=CH/ST=Vaud/L=Lausanne/O=42/OU=42/CN=${DOMAIN_NAME}/emailAddress=${WP_ADMIN_EMAIL}"
+		-subj "/C=CH/ST=Vaud/L=Lausanne/O=42/OU=42/CN=${NX_DOMAIN_NAME}/emailAddress=${NX_USER_ADMIN_EMAIL}"
 
 # EXPOSE 443
 
