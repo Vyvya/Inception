@@ -10,5 +10,5 @@ if [ -z "$(ls -A "/etc/ssl/certs")" ]; then
 
 fi
 
-mv /conf/nginx.conf /etc/nginx/sites-available/default
+# mv /conf/nginx.conf /etc/nginx/sites-available/default
 exec "$@"

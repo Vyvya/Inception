@@ -5,18 +5,21 @@ DC = docker compose
 CDIR = srcs
 CFILE = ${CDIR}/docker-compose.yml
 ARGS = -f ${CFILE}
+VOLUMES = wordpress mariadb
 
-all:
-	docker compose -f ./srcs/docker-compose.yml up -d --build
+all: prep_all
 
-mkdir:
-	mkdir /home/vgejno/data /home/vgejno/data/wordpress /home/vgejno/data/mariadb
+prep_all: volumes build
+	chmod -R 777 /home/${USER}/data/${VOLUMES}
 
-start:
-	docker compose -f ./srcs/docker-compose.yml up -d
+volumes:
+	mkdir -p /home/${USER}/data/${VOLUMES}
 
 build:
-	docker compose ./srcs/docker-compose.yml build
+	docker compose -f ./srcs/docker-compose.yml build --no-cache
+
+start:
+	docker compose -f ./srcs/docker-compose.yml up -d --build
 
 down:
 	docker compose -f ./srcs/docker-compose.yml down
@@ -24,16 +27,23 @@ down:
 stop:
 	cd ./srcs && docker compose stop
 
-clean: stop
-	docker rm $$(docker ps -qa);\
-	docker rmi -f $$(docker images -qa);\
-	docker volume rm $$(docker volume ls -q);\
-	rm -rf home/vgejno/data/wordpress/*
-	rm -rf home/vgejno/data/mariadb/*
-	rm -rf tmp/data/wordpress/*
-	rm -rf tmp/data/mariadb/*
-	yes | docker system prune -a --force
-	yes | docker volume prune
+clear:
+	echo 'docker stop $(docker ps -qa); docker rm $(docker ps -qa); docker rmi -f $(docker images -qa); docker volume rm $(docker volume ls -q); docker network rm $(docker network ls -q) 2>/dev/null'
+	# docker rm $$(docker ps -qa);\
+	# docker rmi -f $$(docker images -qa);\
+	# docker volume rm $$(docker volume ls -q);\
+	# rm -rf home/vgejno/data/wordpress/*
+	# rm -rf home/vgejno/data/mariadb/*
+	# yes | docker system prune -a --force
+	# yes | docker volume prune
+
+clean_volumes:
+
+
+fclean_volumes:
+	sudo rm -rf * /home/${USER}/data/${VOLUMES}
+
+fclean: stop down
 
 re: down clean all
 

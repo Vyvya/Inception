@@ -15,7 +15,8 @@ echo -e "\e[31m$DB_HOST\e[0m"
 
         /bin/ls 
         
-        wp core install --url=${DOMAIN_NAME} --title=${TITLE} --admin_user=${USER_NAME} --admin_password=${USER_ADMIN_PASS} --admin_email=${USER_ADMIN_EMAIL} --skip-email  --allow-root
+        wp core download --allow-root
+        wp config create --dbhost=${DB_HOST} --dbname=${DB_NAME} --dbuser=${DB_USER} --dbpass=${DB_PASSWORD} --allow-root
         #  wp-cli.phar user create ${DB_USER} ${USER_EMAIL} --user_pass=${DB_PASSWORD} --role=suscriber --allow-root
             # wp theme install astra --activate --allow-root
             # Other installation steps
