@@ -11,21 +11,25 @@ echo -e "\e[31m$DB_HOST\e[0m"
  
 
         # wp create --dbhost=${DB_HOST} --dbname=${DB_NAME} --dbuser=${DB_USER} --dbpass=${DB_PASSWORD} --allow-root
-        echo ................blu...............
+# until mysqladmin ping -h "mariadb" --silent; do
+#     echo "Waiting for MariaDB to be ready..."
+#     sleep 1
+# done
+# echo "|-- Starting Wordpress setup. --|"
 
-        /bin/ls 
+# rm -f /var/www/html/wp-config.php
         
-        wp core download --allow-root
-        wp config create --dbhost=${DB_HOST} --dbname=${DB_NAME} --dbuser=${DB_USER} --dbpass=${DB_PASSWORD} --allow-root
-        #  wp-cli.phar user create ${DB_USER} ${USER_EMAIL} --user_pass=${DB_PASSWORD} --role=suscriber --allow-root
-            # wp theme install astra --activate --allow-root
-            # Other installation steps
+wp core download --allow-root
+wp config create --dbhost=${DB_HOST} --dbname=${DB_NAME} --dbuser=${DB_USER} --dbpass=${DB_PASSWORD} --allow-root
+wp core install --url=${DOMAIN_NAME} --title=${vgejnoINCEPTION} --admin_user=${USER_ADMIN_NAME} --admin_password=${USER_ADMIN_PASSWORD} --admin_email=${USER_ADMIN_EMAIL} --allow-root
+wp user create ${DB_USER} ${DB_EMAIL} --user_pass=${DB_PASSWORD} --role=suscriber --allow-root
+wp theme install divi --activate --allow-root
 
-        echo ................bla...............
-        # /bin/ls 
-        /usr/sbin/php-fpm7.3 -F
+echo ................bla...............
+# /bin/ls 
+/usr/sbin/php-fpm7.3 -F
 
-        echo ................blxxxxx...............
+echo ................blxxxxx...............
 # fi
 
 echo -e "\e[31m$DB_HOST\e[0m"
