@@ -17,7 +17,7 @@ echo -e "\e[31m$DB_HOST\e[0m"
 # done
 # echo "|-- Starting Wordpress setup. --|"
 
-rm -f /var/www/html/wp-config.php
+# rm -f /var/www/html/wp-config.php
         
 wp core download --allow-root
 wp config create --dbhost=${DB_HOST} --dbname=${DB_NAME} --dbuser=${DB_USER} --dbpass=${DB_PASSWORD} --skip-check --allow-root
