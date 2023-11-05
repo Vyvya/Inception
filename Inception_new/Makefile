@@ -1,11 +1,13 @@
 all:
 	docker compose -f ./srcs/docker-compose.yml up -d --build
 
+nc: nocache up
+
 up:
 	docker compose -f ./srcs/docker-compose.yml up -d
 
-build:
-	docker compose ./srcs/docker-compose.yml up -d --build
+nocache:
+	docker compose -f ./srcs/docker-compose.yml build --no-cache
 
 down:
 	docker compose -f ./srcs/docker-compose.yml down
@@ -20,4 +22,4 @@ clean:
 
 re: down clean all
 
-.PHONY: up down build
+.PHONY: up down build new

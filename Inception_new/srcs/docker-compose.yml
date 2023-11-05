@@ -41,11 +41,11 @@ services:
     container_name: wordpress
     build:
       context: ./requirements/wordpress
-      # args:
-      #   WP_DB_HOST: ${DB_HOST}
-      #   WP_DB_NAME: ${DB_NAME}
-      #   WP_DB_USER: ${DB_USER}
-      #   WP_DB_PASSWORD: ${DB_PASSWORD}
+      args:
+        - DB_HOST=${DB_HOST}
+        - DB_NAME=${DB_NAME}
+        - DB_USER=${DB_USER}
+        - DB_PASSWORD=${DB_PASSWORD}
     restart: always
     ports:
       - 9000:9000
@@ -76,9 +76,7 @@ services:
       
   mariadb:
     container_name: mariadb
-    # image: mariadb
     build: ./requirements/mariadb
-  #     #context: ./requirements/mariadb
     restart: always
     volumes:
       - mariadb_data:/var/lib/mysql
