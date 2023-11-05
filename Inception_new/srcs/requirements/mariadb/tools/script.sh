@@ -8,9 +8,9 @@ if ! systemctl is-active --quiet mariadb; then
     service mysql start
 fi
 
-echo "mariadb: mysql_secure_installation..."
-/bin/bash /tmp/mysql_secure.sh
-echo "done."
+# echo "mariadb: mysql_secure_installation..."
+# /bin/bash /tmp/mysql_secure.sh
+# echo "done."
 
 echo "LALALALALAA"
 echo $MYSQL_DATABASE
