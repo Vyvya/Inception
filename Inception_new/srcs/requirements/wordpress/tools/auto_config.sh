@@ -1,22 +1,5 @@
 #!/bin/sh
 
-echo -e "\e[31m$DB_HOST\e[0m"
-
-# /bin/ls 
-
-# if [ ! -f /var/www/wordpress/wp-config.php ]; then
-#     wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-
-    # rm -f /var/www/html/wp-config.php
- 
-
-        # wp create --dbhost=${DB_HOST} --dbname=${DB_NAME} --dbuser=${DB_USER} --dbpass=${DB_PASSWORD} --allow-root
-# until mysqladmin ping -h "mariadb" --silent; do
-#     echo "Waiting for MariaDB to be ready..."
-#     sleep 1
-# done
-# echo "|-- Starting Wordpress setup. --|"
-
 rm -f /var/www/wordpress/wp-config.php
         
 wp core download --allow-root
@@ -25,15 +8,4 @@ wp core install --url=${DOMAIN_NAME} --title=${TITLE} --admin_user=${USER_ADMIN_
 wp user create ${USER_NAME} ${USER_EMAIL} --user_pass=${USER_PASSWORD} --role=subscriber --allow-root
 wp theme install divi --activate --allow-root
 
-# echo ................bla...............
-# /bin/ls 
 /usr/sbin/php-fpm7.3 -F
-
-echo ................blxxxxx...............
-# fi
-
-echo -e "\e[31m$DB_HOST\e[0m"
-echo -e "\e[31m$DB_NAME\e[0m"
-echo -e "\e[31m$DB_USER\e[0m"
-echo -e "\e[31m$DB_PASSWORD\e[0m"
-
