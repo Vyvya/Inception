@@ -24,7 +24,7 @@ RUN mv wp-cli.phar /usr/local/bin/wp
 # RUN chmod 755 /var/www/wordpress
 
 WORKDIR /var/www/wordpress
-RUN rm -f /var/www/wordpress/wp-config.php
+# RUN rm -f /var/www/wordpress/wp-config.php
 RUN wp core download --allow-root
 RUN wp config create --dbhost=${DB_HOST} --dbname=${DB_NAME} --dbuser=${DB_USER} --dbpass=${DB_PASSWORD} --skip-check --allow-root
 

@@ -10,7 +10,7 @@ WORKDIR /tmp/nginx/
 # RUN chown www-data:www-data /tmp/nginx/
 
 RUN apt-get update
-RUN apt install -y nginx openssl
+RUN apt install -y nginx
 RUN apt install -y openssl
 RUN apt-get install -y curl gzip
 
