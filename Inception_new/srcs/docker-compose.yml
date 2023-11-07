@@ -42,10 +42,10 @@ services:
     build:
       context: ./requirements/wordpress
       args:
-        DB_HOST: ${DB_HOST}
-        DB_NAME: ${DB_NAME}
-        DB_USER: ${DB_USER}
-        DB_PASSWORD: ${DB_PASSWORD}
+        WDB_HOST: ${DB_HOST}
+        WDB_NAME: ${DB_NAME}
+        WDB_USER: ${DB_USER}
+        WDB_PASSWORD: ${DB_PASSWORD}
     restart: always
     ports:
       - 9000:9000
@@ -57,7 +57,7 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
-      - DB_EMAIL=${DB_ROOT_PASSWORD}
+      - DB_EMAIL=${DB_EMAIL}
       - USER_ADMIN_NAME=${USER_ADMIN_NAME}
       - USER_ADMIN_PASSWORD=${USER_ADMIN_PASSWORD}
       - USER_ADMIN_EMAIL=${USER_ADMIN_EMAIL}

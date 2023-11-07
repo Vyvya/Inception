@@ -1,15 +1,15 @@
 #!/bin/sh
 
-sed -i "s/127.0.0.1/0.0.0.0/g" /etc/mysql/mariadb.conf.d/50-server.cnf
+# sed -i "s/127.0.0.1/0.0.0.0/g" /etc/mysql/mariadb.conf.d/50-server.cnf
 
-service mysql start
-# set -e
+# service mysql start
+set -e
 
-# if ! systemctl is-active --quiet mariadb; then
-#     rm -R /var/lib/mysql/*
-#     mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
-#     service mysql start
-# fi
+if ! systemctl is-active --quiet mariadb; then
+    rm -R /var/lib/mysql/*
+    mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+    service mysql start
+fi
 
 cat > configure.sql << EOF
 CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;
@@ -22,8 +22,8 @@ mariadb -uroot < ./configure.sql
 
 rm ./configure.sql
 
-service mysql stop
+# service mysql stop
 
-# mysqladmin shutdown
+mysqladmin shutdown
 
-# exec mysqld_safe
+exec mysqld_safe
