@@ -1,39 +1,30 @@
 FROM debian:buster
 
-# Install required packages
-RUN apt-get update && apt-get upgrade -y && apt-get -y install wget \
-    php php-fpm php-mysql php-phar \
-    php-json php-xml php-mbstring \
-    php-curl php-gd php-intl php-zip \
-    mariadb-client
+ARG WDB_HOST
+ARG WDB_NAME
+ARG WDB_USER
+ARG WDB_PASSWORD
 
-# Set the working directory
-WORKDIR /var/www/html
+RUN apt-get update
+RUN apt-get -y install vim curl iputils-ping php7.3 php-mysql php-fpm mariadb-client
 
-# Ensure the directory is owned by the web server user (www-data)
-RUN chown -R www-data:www-data /var/www/
-RUN chmod -R 755 /var/www/html/
-
-#WP-CLI is the command-line interface for WordPress. You can update plugins, 
-#configure multisite installations and much more, without using a web browser
-RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-RUN chmod +x wp-cli.phar
-RUN mv wp-cli.phar /usr/local/bin/wp
-#RUN cp conf/wp-config.php /var/www/html/wp-config.php
-
-# Give ownership to the web server user (www-data)
-RUN	chown -R www-data:www-data /var/www/html
-
-EXPOSE 9000
-
-# RUN chmod +x /run/
 RUN mkdir -p /run/php
-COPY ./conf/www.conf /etc/php/fpm/pool.d/www.conf
+COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d/www.conf
 
-COPY ./conf/auto_config.sh /usr/local/bin/auto_config.sh
-RUN chmod 777 /usr/local/bin/auto_config.sh
-# COPY ./tools/wp_my_config.php /var/www/html/wp-config.php
+COPY ./tools/auto_config.sh /tmp/auto_config.sh
+RUN chmod +x /tmp/auto_config.sh
 
-CMD ["/bin/sh", "/usr/local/bin/auto_config.sh"]
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+RUN chmod +x wp-cli.phar
+RUN chown www-data:www-data wp-cli.phar
+RUN mv wp-cli.phar /usr/local/bin/wp
 
-# CMD ["php-fpm", "-F"]
+# RUN chown -R www-data:www-data /var/www/wordpress
+# RUN chmod 755 /var/www/wordpress
+
+WORKDIR /var/www/wordpress
+# RUN rm -f /var/www/wordpress/wp-config.php
+RUN wp core download --allow-root
+RUN wp config create --dbhost=${WDB_HOST} --dbname=${WDB_NAME} --dbuser=${WDB_USER} --dbpass=${WDB_PASSWORD} --skip-check --allow-root
+
+ENTRYPOINT ["/tmp/auto_config.sh"]
