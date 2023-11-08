@@ -6,14 +6,15 @@ if [ ! -f /var/lib/mysql/installed.txt ]; then
 
     # sed -i "s/127.0.0.1/0.0.0.0/g" /etc/mysql/mariadb.conf.d/50-server.cnf
 
-    # Start the MySQL service
-    service mysql start
-
     # Initialize the MySQL database
     mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
 
     # Start the MySQL service
     service mysql start
+
+
+    # # Start the MySQL service
+    # service mysql start
 
     # Create the database, user, and grant privileges
     cat > configure.sql << EOF
